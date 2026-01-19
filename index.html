@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milestones in the Digital Era</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius: 0.75rem;
+            --timeline-line: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--primary-dark);
+        }
+
+        /* --- Toolbar --- */
+        .toolbar {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .search-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            min-width: 200px;
+        }
+
+        .category-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            background-color: white;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        /* --- Timeline --- */
+        .timeline-container {
+            position: relative;
+            padding: 3rem 0;
+            min-height: 80vh;
+        }
+
+        /* The central vertical line */
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--timeline-line);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 0 2rem;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Odd items left, Even items right */
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            text-align: left;
+        }
+
+        /* The dot on the line */
+        .timeline-dot {
+            position: absolute;
+            top: 1.5rem;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px var(--primary);
+            z-index: 10;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -10px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -10px;
+        }
+
+        /* Event Card */
+        .event-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: default;
+        }
+
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        .event-year {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .event-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .event-category {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            background: #f1f5f9;
+            color: var(--secondary);
+            border-radius: 999px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .read-more-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(2px);
+            padding: 1rem;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: var(--radius);
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
+        }
+
+        .close-modal {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: var(--text-main);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-media {
+            margin: 1.5rem 0;
+            background: #f1f5f9;
+            border-radius: var(--radius);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-media img {
+            max-width: 100%;
+            max-height: 500px; /* Prevent too tall images */
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .media-caption {
+            margin-top: 0.75rem;
+            padding: 0 1rem 1rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+            font-style: italic;
+            width: 100%;
+        }
+        
+        .placeholder-image {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e2e8f0;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+        }
+        
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .modal-text {
+            font-size: 1.1rem;
+            color: #334155;
+            margin-bottom: 2rem;
+            white-space: pre-line; /* Keeps paragraphs separated */
+        }
+        
+        .placeholder-text {
+            color: #94a3b8;
+            font-style: italic;
+            border: 1px dashed #cbd5e1;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: var(--radius);
+        }
+
+        .modal-sources {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .modal-sources h4 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .modal-sources ul {
+            list-style: none;
+        }
+
+        .modal-sources li {
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-sources a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .modal-sources a:hover {
+            text-decoration: underline;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* --- Responsive Design --- */
+        @media (min-width: 769px) {
+            .header-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            .toolbar {
+                width: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .timeline-container::before {
+                left: 20px; /* Line stays left on mobile */
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 50px; /* Space for line */
+                padding-right: 0;
+                text-align: left; /* Align all text left */
+            }
+
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                left: 0;
+                text-align: left;
+            }
+
+            .timeline-dot {
+                left: 10px !important; /* Force dot to left line */
+                right: auto !important;
+            }
+            
+            h1 {
+                font-size: 1.25rem;
+            }
+            
+            .event-card:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <h1>Digital Era Milestones</h1>
+            <div class="toolbar">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search events..." aria-label="Search events">
+                <select id="categorySelect" class="category-select" aria-label="Filter by category">
+                    <option value="all">All Categories</option>
+                    <!-- Categories injected by JS -->
+                </select>
+                <button id="resetBtn" class="btn btn-secondary">Reset</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="timeline" class="timeline-container">
+            <!-- Timeline items injected by JS -->
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <header class="modal-header">
+                <div>
+                    <span id="modalYear" class="event-year" style="margin-bottom:0.25rem; font-size:1rem;"></span>
+                    <h2 id="modalTitle" style="font-size:1.5rem; line-height:1.2;"></h2>
+                </div>
+                <button id="closeModalBtn" class="close-modal" aria-label="Close modal">&times;</button>
+            </header>
+            <div class="modal-body">
+                <div id="modalMedia" class="modal-media">
+                    <!-- Image or Video injected here -->
+                </div>
+                
+                <div id="modalText" class="modal-text">
+                    <!-- Paragraphs injected here -->
+                </div>
+
+                <div id="modalSources" class="modal-sources">
+                    <h4>Sources & References</h4>
+                    <ul id="modalSourcesList">
+                        <!-- Links injected here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const events = [
+            {
+                id: 1,
+                year: "1843",
+                title: "The First Computer Program (Ada Lovelace)",
+                subtitle: "Visionary notes that created the first algorithm.",
+                category: "Programming",
+                paragraphsPlaceholders: [
+                    "While translating an article on Charles Babbage’s Analytical Engine, Ada Lovelace added visionary notes. She described the very first algorithm intended to be processed by a machine, making her the first computer programmer in history."
+                ],
+                image: {
+                    src: "img/1843.jpg",
+                    alt: "Ada Lovelace 1843 notes and early algorithm concept",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: "https://www.youtube.com/embed/nczUAqGMCoA" },
+                sources: [
+                    { label: "YouTube (supporting video)", url: "https://www.youtube.com/watch?v=nczUAqGMCoA" },
+                    { label: "BBC Newsround (Ada)", url: "https://www.bbc.co.uk/newsround/49960544" },
+                    { label: "cs4fn Issue 20 (PDF)", url: "cs4fnissue20.pdf" }
+                ]
+            },
+            {
+                id: 2,
+                year: "1936",
+                title: "The Turing Machine (Alan Turing)",
+                subtitle: "A theoretical model for modern computing.",
+                category: "Computing theory",
+                paragraphsPlaceholders: [
+                    "In a foundational paper, mathematician Alan Turing conceptualized an abstract machine capable of performing any logical calculation. This theoretical model laid the universal groundwork for modern computing and artificial intelligence."
+                ],
+                image: {
+                    src: "img/1936.jpg",
+                    alt: "Turing machine tape model illustration",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: "https://www.youtube.com/embed/J7ITqnEmf-g?start=32" },
+                sources: [
+                    { label: "YouTube (computing history)", url: "https://www.youtube.com/watch?v=J7ITqnEmf-g&t=32s" }
+                ]
+            },
+            {
+                id: 3,
+                year: "1946",
+                title: "ENIAC: The Electronic Era",
+                subtitle: "The first fully electronic, general-purpose digital computer.",
+                category: "Computing history",
+                paragraphsPlaceholders: [
+                    "ENIAC was completed as the first fully electronic, general-purpose digital computer. Massive in size (30 tons) and capable of rapid ballistic calculations, it marked the definitive break from mechanical calculators to electronic processing."
+                ],
+                image: {
+                    src: "img/1946.jpg",
+                    alt: "Early electronic computer room with large machines",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: [
+                    { label: "YouTube (computing history)", url: "https://www.youtube.com/watch?v=J7ITqnEmf-g&t=32s" }
+                ]
+            },
+            {
+                id: 4,
+                year: "1971",
+                title: "The Intel 4004 & Miniaturization",
+                subtitle: "The very first commercial microprocessor.",
+                category: "Hardware",
+                paragraphsPlaceholders: [
+                    "Intel released the 4004, the very first commercial microprocessor. By consolidating the essential functions of a computer onto a tiny silicon chip, it paved the way for miniaturization and affordable computing."
+                ],
+                image: {
+                    src: "img/1971.jpg",
+                    alt: "Intel 4004 chip",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: []
+            },
+            {
+                id: 5,
+                year: "1976",
+                title: "The Birth of Apple",
+                subtitle: "Computers become personal tools.",
+                category: "Personal Computing",
+                paragraphsPlaceholders: [
+                    "Steve Jobs and Steve Wozniak founded Apple and launched the Apple I, originally assembled in a garage. This marked a cultural shift: computers were no longer just for scientists but became 'personal' tools accessible to enthusiasts."
+                ],
+                image: {
+                    src: "img/1976.jpg",
+                    alt: "Apple I computer",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: []
+            },
+            {
+                id: 6,
+                year: "1981",
+                title: "The IBM PC Standard",
+                subtitle: "The Personal Computer becomes a global standard.",
+                category: "Personal Computing",
+                paragraphsPlaceholders: [
+                    "IBM launched the model 5150, the 'Personal Computer' (PC). Thanks to its open architecture, it quickly became the global standard, driving a massive explosion in the software market and bringing computers into homes and offices worldwide."
+                ],
+                image: {
+                    src: "img/1981.jpg",
+                    alt: "IBM 5150 PC",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: []
+            },
+            {
+                id: 7,
+                year: "1991",
+                title: "The Web Goes Public (Tim Berners-Lee)",
+                subtitle: "The Internet becomes a global information system.",
+                category: "Web",
+                paragraphsPlaceholders: [
+                    "Tim Berners-Lee announced the availability of the World Wide Web (WWW). By connecting documents via hyperlinks accessible from anywhere, he transformed the Internet (the physical network) into a global, easy-to-navigate information system."
+                ],
+                image: {
+                    src: "img/1991.jpg",
+                    alt: "Hyperlinks and early web browser concept",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: "https://www.youtube.com/embed/nczUAqGMCoA" },
+                sources: [
+                    { label: "YouTube (web history)", url: "https://www.youtube.com/watch?v=nczUAqGMCoA" }
+                ]
+            },
+            {
+                id: 8,
+                year: "1998",
+                title: "The Founding of Google",
+                subtitle: "Organizing the world's information.",
+                category: "Web",
+                paragraphsPlaceholders: [
+                    "Larry Page and Sergey Brin founded Google. Their search engine, built on an innovative ranking algorithm, organized the chaos of the Web, making the world's information instantly accessible and relevant."
+                ],
+                image: {
+                    src: "img/1998.jpg",
+                    alt: "Google homepage concept",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: []
+            },
+            {
+                id: 9,
+                year: "2004",
+                title: "The Rise of Social Media (Facebook)",
+                subtitle: "Redefining human interaction online.",
+                category: "Social Media",
+                paragraphsPlaceholders: [
+                    "Mark Zuckerberg launched 'TheFacebook' from Harvard. The site propelled the concept of social networking to a global scale, radically redefining how humans interact, share privacy, and consume news."
+                ],
+                image: {
+                    src: "img/2004.jpg",
+                    alt: "Social network graph",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: []
+            },
+            {
+                id: 10,
+                year: "2007",
+                title: "The iPhone Revolution",
+                subtitle: "Putting the Web in users' pockets.",
+                category: "Mobile",
+                paragraphsPlaceholders: [
+                    "Steve Jobs unveiled the iPhone, fusing a phone, a music player, and an internet browser into an intuitive touch interface. It literally put the Web in users' pockets and inaugurated the era of modern smartphones and mobile apps."
+                ],
+                image: {
+                    src: "img/2007.jpg",
+                    alt: "Original iPhone",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: [
+                    { label: "BBC Newsround (digital history)", url: "https://www.bbc.co.uk/newsround/49960544" }
+                ]
+            },
+            {
+                id: 11,
+                year: "2016",
+                title: "Smart Assistants",
+                subtitle: "AI enters the domestic sphere.",
+                category: "AI",
+                paragraphsPlaceholders: [
+                    "AI entered the domestic sphere with the mainstream adoption of smart speakers (Google Home, Alexa). Human-machine interaction became conversational, allowing users to control their environment and access services simply by using their voice."
+                ],
+                image: {
+                    src: "img/2016.jpg",
+                    alt: "Smart speaker device",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: []
+            },
+            {
+                id: 12,
+                year: "2023",
+                title: "The Explosion of Generative AI",
+                subtitle: "A new frontier for creativity and automation.",
+                category: "AI",
+                paragraphsPlaceholders: [
+                    "Artificial Intelligence went mainstream with the viral success of ChatGPT and Midjourney. Capable of generating high-quality text, code, and images, these tools marked a new technological frontier for creativity, automation, and work."
+                ],
+                image: {
+                    src: "img/2023.jpg",
+                    alt: "Generative AI concept",
+                    captionPlaceholder: "[ADD IMAGE CAPTION]"
+                },
+                video: { youtubeUrl: null },
+                sources: [
+                    { label: "BBC Science/Environment", url: "https://www.bbc.com/news/science-environment-34243042" }
+                ]
+            }
+        ];
+
+        // --- Logic ---
+        const timelineEl = document.getElementById('timeline');
+        const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
+        const resetBtn = document.getElementById('resetBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // Populate Categories
+        const categories = [...new Set(events.map(e => e.category))].sort();
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat;
+            categorySelect.appendChild(option);
+        });
+
+        // Render Function
+        function renderTimeline(data) {
+            timelineEl.innerHTML = '';
+            
+            if (data.length === 0) {
+                timelineEl.innerHTML = '<div class="no-results">No events found matching your criteria.</div>';
+                return;
+            }
+
+            data.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'timeline-item';
+                
+                // Timeline Dot
+                const dot = document.createElement('div');
+                dot.className = 'timeline-dot';
+                itemDiv.appendChild(dot);
+
+                // Card
+                const card = document.createElement('div');
+                card.className = 'event-card';
+                card.innerHTML = `
+                    <span class="event-category">${item.category}</span>
+                    <span class="event-year">${item.year}</span>
+                    <h3 class="event-title">${item.title}</h3>
+                    <p class="event-subtitle">${item.subtitle}</p>
+                    <button class="read-more-btn" data-id="${item.id}">Read more</button>
+                `;
+
+                itemDiv.appendChild(card);
+                timelineEl.appendChild(itemDiv);
+            });
+
+            // Attach Click Listeners
+            document.querySelectorAll('.read-more-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    openModal(id);
+                });
+            });
+        }
+
+        // Filter Function
+        function filterEvents() {
+            const query = searchInput.value.toLowerCase();
+            const category = categorySelect.value;
+
+            const filtered = events.filter(e => {
+                const matchesSearch = e.title.toLowerCase().includes(query) || 
+                                      e.year.includes(query) ||
+                                      e.subtitle.toLowerCase().includes(query);
+                const matchesCategory = category === 'all' || e.category === category;
+                return matchesSearch && matchesCategory;
+            });
+
+            renderTimeline(filtered);
+        }
+
+        // Modal Logic
+        function openModal(id) {
+            const event = events.find(e => e.id === id);
+            if (!event) return;
+
+            // Fill Content
+            document.getElementById('modalYear').textContent = event.year;
+            document.getElementById('modalTitle').textContent = event.title;
+            
+            // Media
+            const mediaContainer = document.getElementById('modalMedia');
+            mediaContainer.innerHTML = '';
+            
+            if (event.video && event.video.youtubeUrl) {
+                // Clean URL (remove backticks or extra spaces if present)
+                let videoUrl = event.video.youtubeUrl.replace(/[`\s]/g, '');
+
+                // Extract Video ID
+                let videoId = null;
+                if (videoUrl.includes('youtube.com/watch?v=')) {
+                    videoId = videoUrl.split('v=')[1];
+                    const ampersandPosition = videoId.indexOf('&');
+                    if (ampersandPosition !== -1) {
+                        videoId = videoId.substring(0, ampersandPosition);
+                    }
+                } else if (videoUrl.includes('youtu.be/')) {
+                    videoId = videoUrl.split('youtu.be/')[1];
+                } else if (videoUrl.includes('youtube.com/embed/')) {
+                    videoId = videoUrl.split('embed/')[1];
+                }
+
+                if (videoId) {
+                    // Standard YouTube embed for hosted sites (GitHub Pages)
+                    const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0`;
+                    
+                    const videoWrapper = document.createElement('div');
+                    videoWrapper.className = 'video-container';
+                    // No referrer policy needed for standard web hosting
+                    videoWrapper.innerHTML = `<iframe src="${embedUrl}" title="${event.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+                    mediaContainer.appendChild(videoWrapper);
+
+                    // Add a fallback link below the video
+                    const fallbackLink = document.createElement('div');
+                    fallbackLink.style.textAlign = 'center';
+                    fallbackLink.style.marginTop = '0.5rem';
+                    fallbackLink.innerHTML = `<a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" style="color:var(--primary); font-size:0.9rem; text-decoration:none;">&#9888; If video fails, click here to watch on YouTube</a>`;
+                    mediaContainer.appendChild(fallbackLink);
+
+                } else if (!videoUrl.includes('youtube.com') && !videoUrl.includes('youtu.be')) {
+                     // For non-YouTube links (e.g. Britannica)
+                    const btnWrapper = document.createElement('div');
+                    btnWrapper.className = 'placeholder-image';
+                    btnWrapper.style.flexDirection = 'column';
+                    btnWrapper.style.gap = '1rem';
+                    btnWrapper.innerHTML = `
+                        <p>Video available at external source</p>
+                        <a href="${videoUrl}" target="_blank" class="read-more-btn" style="background:var(--primary); color:white;">Watch Video</a>
+                    `;
+                    mediaContainer.appendChild(btnWrapper);
+                } else {
+                    // Fallback for weird YouTube URLs
+                    const videoWrapper = document.createElement('div');
+                    videoWrapper.className = 'video-container';
+                    videoWrapper.innerHTML = `<iframe src="${videoUrl}" title="${event.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    mediaContainer.appendChild(videoWrapper);
+                }
+            } else if (event.image && event.image.src) {
+                // Image
+                const img = document.createElement('img');
+                img.src = event.image.src;
+                img.alt = event.image.alt || event.title;
+                
+                // Add error handling for image
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    const err = document.createElement('div');
+                    err.className = 'placeholder-image';
+                    err.textContent = 'Image not found: ' + event.image.src;
+                    mediaContainer.appendChild(err);
+                };
+
+                mediaContainer.appendChild(img);
+
+                if (event.image.captionPlaceholder && event.image.captionPlaceholder !== "[ADD IMAGE CAPTION]") {
+                    const caption = document.createElement('div');
+                    caption.className = 'media-caption';
+                    caption.textContent = event.image.captionPlaceholder;
+                    mediaContainer.appendChild(caption);
+                }
+            } else {
+                // Fallback if no image src
+                const placeholder = document.createElement('div');
+                placeholder.className = 'placeholder-image';
+                placeholder.textContent = "No image available";
+                mediaContainer.appendChild(placeholder);
+            }
+
+            // Paragraphs
+            const textContainer = document.getElementById('modalText');
+            textContainer.innerHTML = '';
+            event.paragraphsPlaceholders.forEach(para => {
+                const p = document.createElement('div');
+                p.className = 'placeholder-text';
+                p.textContent = para;
+                textContainer.appendChild(p);
+            });
+
+            // Sources
+            const sourcesList = document.getElementById('modalSourcesList');
+            sourcesList.innerHTML = '';
+            if (event.sources && event.sources.length > 0) {
+                event.sources.forEach(source => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label}</a>`;
+                    sourcesList.appendChild(li);
+                });
+                document.getElementById('modalSources').style.display = 'block';
+            } else {
+                document.getElementById('modalSources').style.display = 'none';
+            }
+
+            modalOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            closeModalBtn.focus();
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', filterEvents);
+        categorySelect.addEventListener('change', filterEvents);
+        
+        resetBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            categorySelect.value = 'all';
+            renderTimeline(events);
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+        
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('open')) {
+                closeModal();
+            }
+        });
+
+        // Initial Render
+        renderTimeline(events);
+
+    </script>
+</body>
+</html>
